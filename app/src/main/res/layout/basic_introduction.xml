@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar_layout" />
+
+    <Button
+        android:id="@+id/button_nomal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="常规做法"
+        android:textColor="@color/colorAccent" />
+
+    <Button
+        android:id="@+id/button_rx"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="RxJava做法"
+        android:textColor="@color/colorAccent" />
+
+    <Button
+        android:id="@+id/button_rx_"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="测试每个知识点"
+        android:textColor="@color/colorAccent" />
+
+
+</LinearLayout>

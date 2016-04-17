@@ -1,0 +1,12 @@
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="marquee"
+    android:gravity="center"
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:padding="8dp"
+    android:singleLine="true"
+    android:textAppearance="?android:attr/textAppearanceListItemSmall"
+    android:textColor="@color/colorAccent"
+    android:textSize="20sp" />
