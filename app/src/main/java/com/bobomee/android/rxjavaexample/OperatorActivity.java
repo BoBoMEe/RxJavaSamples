@@ -47,13 +47,14 @@ public class OperatorActivity extends ToolBarActivity {
             }
             break;
             case 1: {
+                method1();
             }
             break;
         }
     }
 
 
-    //变换map
+    //////////////////////////////变换map/////////////////////////////////
 
     /**
      * 可以看到通过map'操作符将String -> Integer
@@ -134,7 +135,16 @@ public class OperatorActivity extends ToolBarActivity {
     /**
      * 但是上面不是说过Subscriber应该做的越少越好，我们不想在Subscriber中做for循环。这就需要flatmap了
      * <p>
-     * 顺利的将 Student -->Observable<Course> -->Course
+     * Student -->Observable<Course> -->Course
+     * <p>
+     * <p>
+     * 与map不同的是，flatMap返回的是Observable对象，并且这个 Observable 对象并不是被直接发送到了 Subscriber 的回调方法中
+     * 原理：
+     * 1. 使用传入的事件对象创建一个 Observable 对象；
+     * 2. 并不发送这个 Observable, 而是将它激活，于是它开始发送事件；
+     * 3. 每一个创建出来的 Observable 发送的事件，都被汇入同一个 Observable ，而这个 Observable 负责将这些事件统一交给 Subscriber 的回调方法。
+     * <p>
+     * 通过一组新创建的 Observable 将初始的对象『铺平』之后通过统一路径分发了下去。
      */
 
     private void method3() {
@@ -151,11 +161,25 @@ public class OperatorActivity extends ToolBarActivity {
                 .subscribe(new Action1<Course>() {
                     @Override
                     public void call(Course course) {
-                        Logger.d(course.toString());
+                        Logger.d(course.name);
                     }
                 });
 
     }
+
+
+
+    ///////////////////////////lift()////////////////////////////////
+
+
+
+
+//    /**
+//     * 防手抖 短时间重复 点击，打开两个相同界面
+//     */
+//    private void method4(){
+//
+//    }
 
 
 }
