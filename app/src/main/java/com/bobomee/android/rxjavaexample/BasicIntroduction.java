@@ -1,6 +1,7 @@
 package com.bobomee.android.rxjavaexample;
 
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -17,6 +18,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -146,92 +148,9 @@ public class BasicIntroduction extends ToolBarActivity {
                 });
     }
 
-
-    ///RxJava 相关概念
-    /**
-     * RxJava类似观察者模式，
-     * Observable (被观察者)和 Observer (观察者)通过 subscribe(订阅)方法实现订阅关系
-     * Observable 在需要的时候发出事件来通知 Observer
-     *
-     */
-
-    /**
-     * RxJava 回调方法
-     * <p>
-     * onNext()：相当于 onClick() / onEvent()
-     * onCompleted(): 事件队列完结，时间队列中没有 新的 onNext() 发出时触发
-     * onError(): 事件队列异常，事件处理过程出异常时，onError() 会被触发，同时队列自动终止，不再有事件发出
-     * <p>
-     * onCompleted() 和 onError() 二者互斥，在一个正确运行的事件序列中, onCompleted() 和 onError() 有且只会触发一个
-     */
-
-    // TODO: 16/4/17  测试入口
-    //RxJava逐个方法测试
-    private void doRxJavaMethod() {
-
-        testMethod(2);
-
-    }
-
-    private void testMethod(int number) {
-        switch (number) {
-            case 0: {
-                method0();
-            }
-            break;
-            case 1: {
-                method1();
-            }
-            break;
-            case 2: {
-                method2();
-            }
-            break;
-        }
-    }
-
-    /**
-     * 基础练习
-     * 1. 创建观察者 Observer或者Subscriber
-     * 2. 创建被观察者 Observable
-     * 3. 订阅subscribe
-     * <p>
-     * 注意：Subscriber：
-     * Subscriber是Observer的抽象类，在使用过程中，Observer 也总是会先被转换成一个 Subscriber 再使用
-     * onStart()：Subscriber类中新增方法，在subscribe所在线程执行，用于一些准备工作，如果需要指定线程可以使用doOnSubscribe()方法
-     * unsubscribe()：Subscriber类中新增方法，是Subscription接口中的方法，Subscriber实现它，用于取消订阅，可以放置内存泄漏
-     * isUnsubscribed()：Subscription接口中的方法，用于判断订阅状态，一般在使用unsubscribe()时先判断一下
-     */
-    private void method0() {
-        //1.观察者
-        Observer<String> subscriber = new Subscriber<String>() {
-            @Override
-            public void onNext(String s) {
-                Logger.d("Item: " + s);
-            }
-
-            @Override
-            public void onCompleted() {
-                Logger.d("Completed!");
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Logger.d("Error!");
-            }
-        };
-
-        //2.被观察者
-        /**
-         * 这里传入了一个 OnSubscribe 对象作为参数.
-         * OnSubscribe 会被存储在返回的 Observable 对象中，它的作用相当于一个计划表，
-         * 当 Observable 被订阅的时候，OnSubscribe 的 call() 方法会自动被调用，事件序列就会依照设定依次触发
-         *
-         * 如下定义就是：
-         * 观察者Subscriber 将会被调用三次 onNext() 和一次 onCompleted(),其中onError和onCompleted互斥。
-         * 被观察者调用了观察者的回调方法，就实现了由被观察者向观察者的事件传递，即观察者模式。
-         */
-        rx.Observable<String> observable = Observable.create(new Observable.OnSubscribe<String>() {
+    @NonNull
+    private Observable<String> createStringObservable() {
+        return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 subscriber.onNext("Hello");
@@ -241,26 +160,11 @@ public class BasicIntroduction extends ToolBarActivity {
                 subscriber.onError(new Throwable());
             }
         });
-
-        //3.订阅
-        /**
-         * 流式 API 的设计 使得 这里看起来 是｛
-         *  被观察者 订阅了 观察者
-         * ｝
-         */
-        observable.subscribe(subscriber);
     }
 
-
-    /**
-     * 快捷创建事件
-     * <p>
-     * 除了create方法，还有just和from
-     */
-    private void method1() {
-
-        //1.观察者
-        Observer<String> subscriber = new Subscriber<String>() {
+    @NonNull
+    private Observer<String> createStringObserver() {
+        return new Subscriber<String>() {
             @Override
             public void onNext(String s) {
                 Logger.d("Item: " + s);
@@ -276,33 +180,83 @@ public class BasicIntroduction extends ToolBarActivity {
                 Logger.d("Error!");
             }
         };
+    }
 
+    @NonNull
+    private Observer<Integer> createIntegerObserver() {
+        return new Subscriber<Integer>() {
+            @Override
+            public void onNext(Integer s) {
+                Logger.d("Item: " + s);
+            }
+
+            @Override
+            public void onCompleted() {
+                Logger.d("Completed!");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Logger.d("Error!");
+            }
+        };
+    }
+
+    // TODO: 16/4/17  测试入口
+    //RxJava逐个方法测试
+    private void doRxJavaMethod() {
+        defer();
+
+    }
+
+    //Creating Observables
+    private void create() {
+        //1.观察者
+        Observer<String> subscriber = createStringObserver();
         //2.被观察者
-        /**
-         * just(T...): 将传入的参数依次发送出来。
-         *
-         *  将会依次调用：
-         *  onNext("Hello");
-         *  onNext("Hi");
-         *  onNext("Aloha");
-         *  onCompleted();或者程序出现异常掉用onError
-         */
+        Observable<String> observable = createStringObservable();
+        //3.订阅
+        observable.subscribe(subscriber);
+    }
 
-//        Observable observable = Observable.just("just", "test", "just");
-
-
-        ///////////////////////////////////////////////////////////////////
-
-        /**
-         * from(T[]) / from(Iterable<? extends T>) : 将传入的数组或 Iterable 拆分成具体对象后，依次发送出来。
-         */
-        String[] words = {"from", "test", "from"};
-        Observable observable = Observable.from(words);
-
-        /////////////////////////////////////////////////////////////////
-
+    private void just() {
+        //1.观察者
+        Observer<String> subscriber = createStringObserver();
+        //2.被观察者
+        Observable observable = Observable.just("just", "test", "just");
         //3:订阅:
         observable.subscribe(subscriber);
+    }
+
+    private void from() {
+        //1.观察者
+        Observer<String> subscriber = createStringObserver();
+        //2.被观察者
+        String[] words = {"from", "test", "from"};
+        Observable observable = Observable.from(words);
+        //3:订阅:
+        observable.subscribe(subscriber);
+    }
+
+    private void range() {
+        //1.观察者
+        Observer<Integer> subscriber = createIntegerObserver();
+        //2.被观察者
+        Observable observable = Observable.range(10, 5);
+        //3:订阅:
+        observable.subscribe(subscriber);
+    }
+
+    private void defer() {
+        Observable.defer(new Func0<Observable<String>>() {
+            @Override
+            public Observable<String> call() {
+                return Observable.just(System.currentTimeMillis() + "");
+            }
+        })
+                .subscribe(createStringObserver());
+
+//        Observable.just(System.currentTimeMillis()).subscribe(s -> Logger.d(s + ""));
 
     }
 
