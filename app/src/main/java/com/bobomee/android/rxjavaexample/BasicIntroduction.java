@@ -10,6 +10,7 @@ import com.orhanobut.logger.Logger;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.OnClick;
 import rx.Observable;
@@ -205,7 +206,7 @@ public class BasicIntroduction extends ToolBarActivity {
     // TODO: 16/4/17  测试入口
     //RxJava逐个方法测试
     private void doRxJavaMethod() {
-        defer();
+        timer();
 
     }
 
@@ -263,20 +264,7 @@ public class BasicIntroduction extends ToolBarActivity {
     /**
      * 不完整定义的回调
      */
-
-    /**
-     * Action0 是 RxJava 的一个接口，它只有一个方法 call()，这个方法是无参无返回值的；
-     * 由于 onCompleted() 方法也是无参无返回值的，因此 Action0 可以被当成一个包装对象，
-     * 将 onCompleted() 的内容打包起来将自己作为一个参数传入 subscribe() 以实现不完整定义的回调。
-     * 这样其实也可以看做将 onCompleted() 方法作为参数传进了 subscribe()，相当于其他某些语言中的『闭包』。
-     * <p>
-     * Action1 也是一个接口，它同样只有一个方法 call(T param)，这个方法也无返回值，但有一个参数；
-     * 与 Action0 同理，由于 onNext(T obj) 和 onError(Throwable error) 也是单参数无返回值的，
-     * 因此 Action1 可以将 onNext(obj) 和 onError(error) 打包起来传入 subscribe() 以实现不完整定义的回调。
-     * 事实上，虽然 Action0 和 Action1 在 API 中使用最广泛，但 RxJava 是提供了多个 ActionX 形式的接口 (例如 Action2, Action3) 的，
-     * 它们可以被用以包装不同的无返回值的方法。
-     */
-    private void method2() {
+    private void action() {
         //1.观察者
 
         Action1<String> onNextAction = new Action1<String>() {
@@ -307,41 +295,12 @@ public class BasicIntroduction extends ToolBarActivity {
         rx.Observable<String> observable = Observable.just("just", "just", "just", "just");
 
         //3.订阅
-// 自动创建 Subscriber ，并使用 onNextAction 来定义 onNext()
-//        observable.subscribe(onNextAction);
-// 自动创建 Subscriber ，并使用 onNextAction 和 onErrorAction 来定义 onNext() 和 onError()
-//        observable.subscribe(onNextAction, onErrorAction);
-// 自动创建 Subscriber ，并使用 onNextAction、 onErrorAction 和 onCompletedAction 来定义 onNext()、 onError() 和 onCompleted()
+        // 自动创建 Subscriber ，并使用 onNextAction、 onErrorAction 和 onCompletedAction 来定义 onNext()、 onError() 和 onCompleted()
         observable.subscribe(onNextAction, onErrorAction, onCompletedAction);
     }
 
 
-    /**
-     * 线程控制Scheduler
-     * <p>
-     * 在不指定线程的情况下， RxJava 遵循的是线程不变的原则，
-     * 即：在哪个线程调用 subscribe()，就在哪个线程生产事件；在哪个线程生产事件，就在哪个线程消费事件。如果需要切换线程，就需要用到 Scheduler （调度器）。
-     * <p>
-     * RxJava内置Scheduler
-     * <p>
-     * Schedulers.immediate(): 默认的 Scheduler,当前线程运行，即不指定线程。
-     * Schedulers.newThread(): 总是启用新线程，并在新线程执行操作。
-     * Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。
-     * 和 newThread() 差不多，区别在于 io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。
-     * Schedulers.computation(): 计算所使用的 Scheduler。
-     * 这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。
-     * AndroidSchedulers.mainThread():它指定的操作将在 Android 主线程运行。
-     * <p>
-     * 注意：
-     * 不要把计算工作放在 io() 中，可以避免创建不必要的线程。
-     * 不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
-     * <p>
-     * subscribeOn(): 指定 subscribe() 所发生的线程,即Observable.OnSubscribe 被激活时所处的线程，或者叫做事件产生的线程。
-     * <p>
-     * observeOn(): 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程。
-     */
-
-    private void method3() {
+    private void scheduler() {
         int drawableRes = R.mipmap.ic_launcher;
         ImageView imageView = new ImageView(this);
         Observable.create(new Observable.OnSubscribe<Drawable>() {
@@ -369,6 +328,36 @@ public class BasicIntroduction extends ToolBarActivity {
                         Logger.d("Error!");
                     }
                 });
+    }
+
+    private void interval() {
+        Observable.interval(1, TimeUnit.SECONDS).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        Logger.d("onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("onError" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Logger.d("interval:" + aLong);
+                    }
+                });
+    }
+
+
+    private void repeat() {
+        Observable.just(1, 2, 3, 4, 5).repeat(5).observeOn(AndroidSchedulers.mainThread()).subscribe(integer -> Logger.d(integer + ""));
+    }
+
+    private void timer() {
+        Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> Logger.d(l + ""));
     }
 
 

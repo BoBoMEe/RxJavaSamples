@@ -185,3 +185,194 @@ Defer操作符只有当有Subscriber来订阅的时候才会创建一个新的Ob
 
 > 和 just不同的是，just可以将数字、字符串、数组、Iterate对象转为Observable对象发射出去，但值是创建的时候就不变了的。
 
+## Action
+
+Action是RxJava中专门用于处理 （无返回值） 的不完整回调的，RxJava 会自动根据定义创建出 Subscriber 。
+相当于一个包装对象，比如Action0是无参无返回值的 ，只有一个方法 call()，常用于包装onCompleted(),
+Action1带一个参数，只有一个方法 call(T param)，常用于包装onNext(obj) 和 onError(error)，
+RxJava 提供了多个 ActionX 形式的接口 (例如 Action2, Action3) 
+
+```java
+private void action() {
+        //1.观察者
+
+        Action1<String> onNextAction = new Action1<String>() {
+            // onNext()
+            @Override
+            public void call(String s) {
+                Logger.d(s);
+            }
+        };
+        Action1<Throwable> onErrorAction = new Action1<Throwable>() {
+            // onError()
+            @Override
+            public void call(Throwable throwable) {
+                // Error handling
+                Logger.d(throwable.toString());
+            }
+        };
+        Action0 onCompletedAction = new Action0() {
+            // onCompleted()
+            @Override
+            public void call() {
+                Logger.d("completed");
+            }
+        };
+
+
+        //2.被观察者
+        rx.Observable<String> observable = Observable.just("just", "just", "just", "just");
+        //3.订阅
+        // 自动创建 Subscriber ，并使用 onNextAction、 onErrorAction 和 onCompletedAction 来定义 onNext()、 onError() 和 onCompleted()
+        observable.subscribe(onNextAction, onErrorAction, onCompletedAction);
+    }
+```
+
+subscriber相关源码
+
+```java
+public final Subscription subscribe(final Action1<? super T> onNext, final Action1<Throwable> onError, final Action0 onComplete) {
+        if (onNext == null) {
+            throw new IllegalArgumentException("onNext can not be null");
+        }
+        if (onError == null) {
+            throw new IllegalArgumentException("onError can not be null");
+        }
+        if (onComplete == null) {
+            throw new IllegalArgumentException("onComplete can not be null");
+        }
+
+        return subscribe(new Subscriber<T>() {
+
+            @Override
+            public final void onCompleted() {
+                onComplete.call();
+            }
+
+            @Override
+            public final void onError(Throwable e) {
+                onError.call(e);
+            }
+
+            @Override
+            public final void onNext(T args) {
+                onNext.call(args);
+            }
+
+        });
+    }
+```
+
+如果只关心onNext(),即之上的deffer实例可以写成如下形式
+```java
+        Observable.defer(() -> Observable.just(System.currentTimeMillis() + "")).subscribe(s -> Logger.d(s));
+```
+
+## 线程控制Scheduler
+
+*  在不指定线程的情况下， RxJava 遵循的是线程不变的原则，
+      即：在哪个线程调用 subscribe()，就在哪个线程生产事件；在哪个线程生产事件，就在哪个线程消费事件。如果需要切换线程，就需要用到 Scheduler （调度器）。
+      
+*     RxJava内置Scheduler
+      Schedulers.immediate(): 默认的 Scheduler,当前线程运行，即不指定线程。
+      Schedulers.newThread(): 总是启用新线程，并在新线程执行操作。
+      Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。
+      和 newThread() 差不多，区别在于 io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。
+      Schedulers.computation(): 计算所使用的 Scheduler。
+      这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。
+      AndroidSchedulers.mainThread():它指定的操作将在 Android 主线程运行。
+      
+*     注意：
+      不要把计算工作放在 io() 中，可以避免创建不必要的线程。
+      不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
+      subscribeOn(): 指定 subscribe() 所发生的线程,即Observable.OnSubscribe 被激活时所处的线程，或者叫做事件产生的线程。
+      observeOn(): 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程。
+    
+Scheduler实例：      
+ 
+```java
+    private void scheduler() {
+        int drawableRes = R.mipmap.ic_launcher;
+        ImageView imageView = new ImageView(this);
+        Observable.create(new Observable.OnSubscribe<Drawable>() {
+            @Override
+            public void call(Subscriber<? super Drawable> subscriber) {
+                Drawable drawable = getResources().getDrawable(drawableRes);
+                subscriber.onNext(drawable);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                .subscribe(new Observer<Drawable>() {
+                    @Override
+                    public void onNext(Drawable drawable) {
+                        imageView.setImageDrawable(drawable);
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("Error!");
+                    }
+                });
+    }
+```
+
+## Interval 
+Interval所创建的Observable对象会从0开始，每隔固定的时间发射一个数字。需要注意的是这个对象是运行在computation Scheduler, 如果涉及到UI操作，需要切换到主线程执行
+
+实例：
+```java
+private void interval() {
+        Observable.interval(1, TimeUnit.SECONDS).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+                        Logger.d("onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Logger.d("onError" + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Logger.d("interval:" + aLong);
+                    }
+                });
+    }
+```
+
+打印结果：interval:0，interval:1，interval:2...
+
+## Repeat 
+Repeat会将一个Observable对象重复发射，我们可以指定其发射的次数
+
+实例：
+
+```java
+private void repeat() {
+        Observable.just(1, 2, 3, 4, 5).repeat(5).observeOn(AndroidSchedulers.mainThread()).subscribe(integer -> Logger.d(integer + ""));
+    }
+```
+
+打印结果：会重复打印5次 1，2，3，4，5
+
+## Timer 
+Timer会在指定时间后发射一个，注意其也是运行在computation Scheduler
+
+```java
+private void timer() {
+        Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> Logger.d(l + ""));
+    }
+```
+
+隔3秒之后会在logcat打印一个0
+
+参考：RxJava操作符（一）Creating Observables
