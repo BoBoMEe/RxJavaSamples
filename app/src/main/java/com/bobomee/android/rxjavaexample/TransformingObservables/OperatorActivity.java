@@ -1,10 +1,12 @@
-package com.bobomee.android.rxjavaexample;
+package com.bobomee.android.rxjavaexample.TransformingObservables;
 
 import android.view.View;
 
-import com.bobomee.android.rxjavaexample.model.Course;
-import com.bobomee.android.rxjavaexample.model.DataFactory;
-import com.bobomee.android.rxjavaexample.model.Student;
+import com.bobomee.android.rxjavaexample.R;
+import com.bobomee.android.rxjavaexample.ToolBarActivity;
+import com.bobomee.android.rxjavaexample.TransformingObservables.model.Course;
+import com.bobomee.android.rxjavaexample.TransformingObservables.model.DataFactory;
+import com.bobomee.android.rxjavaexample.TransformingObservables.model.Student;
 import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;

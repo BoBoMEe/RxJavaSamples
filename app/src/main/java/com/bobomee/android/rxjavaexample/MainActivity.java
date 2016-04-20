@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bobomee.android.common.util.ActivityUtil;
+import com.bobomee.android.rxjavaexample.CreatingObservables.Creating;
 import com.zhy.base.adapter.ViewHolder;
 import com.zhy.base.adapter.recyclerview.CommonAdapter;
 import com.zhy.base.adapter.recyclerview.OnItemClickListener;
@@ -17,8 +18,8 @@ import butterknife.Bind;
 
 public class MainActivity extends ToolBarActivity {
 
-    String[] TITLES = {"Basic_introduction"};
-    Class<?>[] CLZZS = {BasicIntroduction.class};
+    String[] TITLES = {"Creating Observables"};
+    Class<?>[] CLZZS = {Creating.class};
 
     CommonAdapter commonAdapter;
 

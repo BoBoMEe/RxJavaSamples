@@ -1,10 +1,12 @@
-package com.bobomee.android.rxjavaexample;
+package com.bobomee.android.rxjavaexample.CreatingObservables;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bobomee.android.rxjavaexample.R;
+import com.bobomee.android.rxjavaexample.ToolBarActivity;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -26,7 +28,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by bobomee on 16/4/16.
  */
-public class BasicIntroduction extends ToolBarActivity {
+public class Creating extends ToolBarActivity {
 
     //设定查询目录
     String PATh = "/mnt/sdcard/DCIM/Screenshots";
