@@ -1,4 +1,4 @@
-package com.bobomee.android.rxjavaexample;
+package com.bobomee.android.rxjavaexample.util;
 
 import com.bobomee.android.common.app.BaseApplication;
 import com.orhanobut.logger.AndroidLogTool;

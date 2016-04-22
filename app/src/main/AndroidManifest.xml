@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".RxApplication"
+        android:name=".util.RxApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,11 +23,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreatingObservables.Creating"
-            android:label="基本使用介绍" />
+            android:name=".ui.Creating"
+            android:label="基本使用介绍">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.category" />
+            </intent-filter>
+        </activity>
         <activity
-            android:name=".TransformingObservables.OperatorActivity"
-            android:label="操作符测试" />
+            android:name=".ui.Transforming"
+            android:label="操作符测试">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.category" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

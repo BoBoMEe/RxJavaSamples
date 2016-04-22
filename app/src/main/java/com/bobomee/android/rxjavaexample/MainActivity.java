@@ -1,66 +1,119 @@
 package com.bobomee.android.rxjavaexample;
 
+import android.app.ListActivity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-import com.bobomee.android.common.util.ActivityUtil;
-import com.bobomee.android.rxjavaexample.CreatingObservables.Creating;
-import com.zhy.base.adapter.ViewHolder;
-import com.zhy.base.adapter.recyclerview.CommonAdapter;
-import com.zhy.base.adapter.recyclerview.OnItemClickListener;
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.Arrays;
+public class MainActivity extends ListActivity {
+    private final String CATERGORY = "com.bobomee.android.rxjavaexample.category";
 
-import butterknife.Bind;
-
-public class MainActivity extends ToolBarActivity {
-
-    String[] TITLES = {"Creating Observables"};
-    Class<?>[] CLZZS = {Creating.class};
-
-    CommonAdapter commonAdapter;
-
-    @Bind(R.id.recycler_view)
-    RecyclerView recyclerView;
-
-    @Override
-    protected int provideContentViewId() {
-        return R.layout.activity_main;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setUpRecyclerView();
+//        Intent intent = getIntent();
+//        String path = intent.getStringExtra(CATERGORY);
+//
+//        if (path == null) {
+//            path = "";
+//        }
 
+        setListAdapter(new SimpleAdapter(this, getData(/*path*/),
+                android.R.layout.simple_list_item_1, new String[]{"title"},
+                new int[]{android.R.id.text1}));
+        getListView().setTextFilterEnabled(true);
     }
 
-    private void setUpRecyclerView() {
+    protected List<Map<String, Object>> getData(/*String prefix*/) {
+        List<Map<String, Object>> myData = new ArrayList<>();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+        mainIntent.addCategory(CATERGORY);
 
-        recyclerView.setAdapter(commonAdapter = new CommonAdapter<String>(this, R.layout.recycler_view_tv_item, Arrays.asList(TITLES)) {
-            @Override
-            public void convert(ViewHolder holder, String s) {
-                holder.setText(android.R.id.text1, s);
-            }
-        });
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> list = pm.queryIntentActivities(mainIntent, 0);
 
-        commonAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(ViewGroup parent, View view, Object o, int position) {
-                ActivityUtil.startActivity(MainActivity.this, CLZZS[position]);
-            }
+        if (null == list)
+            return myData;
 
-            @Override
-            public boolean onItemLongClick(ViewGroup parent, View view, Object o, int position) {
-                return false;
-            }
-        });
+        int len = list.size();
+
+//        Map<String, Boolean> entries = new HashMap<String, Boolean>();
+
+        for (int i = 0; i < len; i++) {
+            ResolveInfo info = list.get(i);
+            String label = info.activityInfo.name;
+//            if (TextUtils.isEmpty(prefix) || label.contains(prefix)) {
+                String[] labelPath = label.split("\\.");
+
+                String nextLabel = /*TextUtils.isEmpty(prefix) ? labelPath[labelPath.length - 2] :*/ labelPath[labelPath.length - 1];
+
+//                if (!TextUtils.isEmpty(prefix)) {
+                    addItem(myData, nextLabel, activityIntent(
+                            info.activityInfo.applicationInfo.packageName,
+                            info.activityInfo.name));
+//                } else {
+//                    if (entries.get(nextLabel) == null) {
+//                        addItem(myData, nextLabel, browseIntent(label.substring(0, label.lastIndexOf("."))));
+//                        entries.put(nextLabel, true);
+//                    }
+//                }
+//            }
+        }
+
+        Collections.sort(myData, sDisplayNameComparator);
+
+        return myData;
+    }
+
+    private final static Comparator<Map<String, Object>> sDisplayNameComparator =
+            new Comparator<Map<String, Object>>() {
+                private final Collator collator = Collator.getInstance();
+
+                public int compare(Map<String, Object> map1, Map<String, Object> map2) {
+                    return collator.compare(map1.get("title"), map2.get("title"));
+                }
+            };
+
+    protected Intent activityIntent(String pkg, String componentName) {
+        Intent result = new Intent();
+        result.setClassName(pkg, componentName);
+        return result;
+    }
+
+//    protected Intent browseIntent(String path) {
+//        Intent result = new Intent();
+//        result.setClass(this, MainActivity.class);
+//        result.putExtra(CATERGORY, path);
+//        return result;
+//    }
+
+    protected void addItem(List<Map<String, Object>> data, String name, Intent intent) {
+        Map<String, Object> temp = new HashMap<String, Object>();
+        temp.put("title", name);
+        temp.put("intent", intent);
+        data.add(temp);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        Map<String, Object> map = (Map<String, Object>) l.getItemAtPosition(position);
+
+        Intent intent = (Intent) map.get("intent");
+        startActivity(intent);
     }
 
 }

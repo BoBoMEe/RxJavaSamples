@@ -1,23 +1,21 @@
-package com.bobomee.android.rxjavaexample.CreatingObservables;
+package com.bobomee.android.rxjavaexample.ui;
 
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.ImageView;
 
 import com.bobomee.android.rxjavaexample.R;
-import com.bobomee.android.rxjavaexample.ToolBarActivity;
-import com.orhanobut.logger.Logger;
+import com.bobomee.android.rxjavaexample.RecyclerActivity;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -28,50 +26,16 @@ import rx.schedulers.Schedulers;
 /**
  * Created by bobomee on 16/4/16.
  */
-public class Creating extends ToolBarActivity {
+public class Creating extends RecyclerActivity {
 
     //设定查询目录
-    String PATh = "/mnt/sdcard/DCIM/Screenshots";
+    String PATh = "/mnt/sdcard/DCIM/Camera";
     File[] floders = new File[]{
             new File(PATh)
     };
 
-    @Override
-    protected int provideContentViewId() {
-        return R.layout.basic_introduction;
-    }
-
-    @Override
-    public boolean canBack() {
-        return true;
-    }
-
-
-    @OnClick({R.id.button_nomal, R.id.button_rx, R.id.button_rx_})
-    public void method(View view) {
-
-        switch (view.getId()) {
-            case R.id.button_nomal: {
-
-                doNomal();
-            }
-            break;
-            case R.id.button_rx: {
-
-                doRxjava();
-            }
-            break;
-            case R.id.button_rx_: {
-                doRxJavaMethod();
-            }
-            break;
-            default:
-                break;
-        }
-    }
-
     //常规做法
-    private void doNomal() {
+    public void doNomal() {
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
@@ -82,14 +46,14 @@ public class Creating extends ToolBarActivity {
                     File[] files = floder.listFiles();
 
                     for (File file : files) {
-                        if (file.isFile() && file.getName().endsWith(".png")) {
+                        if (file.isFile() && file.getName().endsWith(".jpg")) {
 
                             final String path = file.getAbsolutePath();
 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Logger.d(path);
+                                    logger(path);
                                 }
                             });
 
@@ -102,37 +66,29 @@ public class Creating extends ToolBarActivity {
 
     }
 
-    //Rxjava做法
-    private void doRxjava() {
-
-//      nolambda();
-
-
-        uselambda();
-    }
-
-    private void uselambda() {
-        rx.Observable.from(floders)
-                .flatMap(file -> rx.Observable.from(file.listFiles()))
-                .filter(file -> file.isFile() && file.getName().endsWith(".png"))
+    public void uselambda() {
+        Subscription subscribe = Observable.from(floders)
+                .flatMap(file -> Observable.from(file.listFiles()))
+                .filter(file -> file.isFile() && file.getName().endsWith(".jpg"))
                 .map(File::getAbsolutePath)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> Logger.d(s));
+                .subscribe(s -> logger(s));
+        addSubscription(subscribe);
     }
 
-    private void nolambda() {
-        rx.Observable.from(floders)
-                .flatMap(new Func1<File, rx.Observable<File>>() {
+    public void nolambda() {
+        Subscription subscribe = Observable.from(floders)
+                .flatMap(new Func1<File, Observable<File>>() {
                     @Override
-                    public rx.Observable<File> call(File file) {
-                        return rx.Observable.from(file.listFiles());
+                    public Observable<File> call(File file) {
+                        return Observable.from(file.listFiles());
                     }
                 })
                 .filter(new Func1<File, Boolean>() {
                     @Override
                     public Boolean call(File file) {
-                        return file.isFile() && file.getName().endsWith(".png");
+                        return file.isFile() && file.getName().endsWith(".jpg");
                     }
                 })
                 .map(new Func1<File, String>() {
@@ -146,9 +102,10 @@ public class Creating extends ToolBarActivity {
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        Logger.d(s);
+                        logger(s);
                     }
                 });
+        addSubscription(subscribe);
     }
 
     @NonNull
@@ -170,17 +127,17 @@ public class Creating extends ToolBarActivity {
         return new Subscriber<String>() {
             @Override
             public void onNext(String s) {
-                Logger.d("Item: " + s);
+                logger("Item: " + s);
             }
 
             @Override
             public void onCompleted() {
-                Logger.d("Completed!");
+                logger("Completed!");
             }
 
             @Override
             public void onError(Throwable e) {
-                Logger.d("Error!");
+                logger("Error!");
             }
         };
     }
@@ -190,30 +147,23 @@ public class Creating extends ToolBarActivity {
         return new Subscriber<Integer>() {
             @Override
             public void onNext(Integer s) {
-                Logger.d("Item: " + s);
+                logger("Item: " + s);
             }
 
             @Override
             public void onCompleted() {
-                Logger.d("Completed!");
+                logger("Completed!");
             }
 
             @Override
             public void onError(Throwable e) {
-                Logger.d("Error!");
+                logger("Error!");
             }
         };
     }
 
-    // TODO: 16/4/17  测试入口
-    //RxJava逐个方法测试
-    private void doRxJavaMethod() {
-        timer();
-
-    }
-
     //Creating Observables
-    private void create() {
+    public void create() {
         //1.观察者
         Observer<String> subscriber = createStringObserver();
         //2.被观察者
@@ -222,7 +172,7 @@ public class Creating extends ToolBarActivity {
         observable.subscribe(subscriber);
     }
 
-    private void just() {
+    public void just() {
         //1.观察者
         Observer<String> subscriber = createStringObserver();
         //2.被观察者
@@ -231,7 +181,7 @@ public class Creating extends ToolBarActivity {
         observable.subscribe(subscriber);
     }
 
-    private void from() {
+    public void from() {
         //1.观察者
         Observer<String> subscriber = createStringObserver();
         //2.被观察者
@@ -241,7 +191,7 @@ public class Creating extends ToolBarActivity {
         observable.subscribe(subscriber);
     }
 
-    private void range() {
+    public void range() {
         //1.观察者
         Observer<Integer> subscriber = createIntegerObserver();
         //2.被观察者
@@ -250,7 +200,7 @@ public class Creating extends ToolBarActivity {
         observable.subscribe(subscriber);
     }
 
-    private void defer() {
+    public void defer() {
         Observable.defer(new Func0<Observable<String>>() {
             @Override
             public Observable<String> call() {
@@ -259,21 +209,20 @@ public class Creating extends ToolBarActivity {
         })
                 .subscribe(createStringObserver());
 
-//        Observable.just(System.currentTimeMillis()).subscribe(s -> Logger.d(s + ""));
 
     }
 
     /**
      * 不完整定义的回调
      */
-    private void action() {
+    public void action() {
         //1.观察者
 
         Action1<String> onNextAction = new Action1<String>() {
             // onNext()
             @Override
             public void call(String s) {
-                Logger.d(s);
+                logger(s);
             }
         };
         Action1<Throwable> onErrorAction = new Action1<Throwable>() {
@@ -281,14 +230,14 @@ public class Creating extends ToolBarActivity {
             @Override
             public void call(Throwable throwable) {
                 // Error handling
-                Logger.d(throwable.toString());
+                logger(throwable.toString());
             }
         };
         Action0 onCompletedAction = new Action0() {
             // onCompleted()
             @Override
             public void call() {
-                Logger.d("completed");
+                logger("completed");
             }
         };
 
@@ -302,65 +251,80 @@ public class Creating extends ToolBarActivity {
     }
 
 
-    private void scheduler() {
+    public void scheduler() {
         int drawableRes = R.mipmap.ic_launcher;
-        ImageView imageView = new ImageView(this);
-        Observable.create(new Observable.OnSubscribe<Drawable>() {
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<Drawable>() {
             @Override
             public void call(Subscriber<? super Drawable> subscriber) {
+                logger("start");
+                //模拟耗时操作
+                SystemClock.sleep(3000);
+
                 Drawable drawable = getResources().getDrawable(drawableRes);
                 subscriber.onNext(drawable);
                 subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.io()) // 指定 subscribe() 发生在 IO 线程
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        progressVisible();//在主线程中显示对话框
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread()) // 指定 Subscriber 的回调发生在主线程
+                .doOnUnsubscribe(this::progressGone)
                 .subscribe(new Observer<Drawable>() {
                     @Override
                     public void onNext(Drawable drawable) {
-                        imageView.setImageDrawable(drawable);
+                        logger(drawable);
+                        progressGone();
                     }
 
                     @Override
                     public void onCompleted() {
+                        logger("onCompleted()!");
+                        progressGone();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("Error!");
+                        logger("Error!");
+                        progressGone();
                     }
                 });
+        addSubscription(subscription);
     }
 
-    private void interval() {
-        Observable.interval(1, TimeUnit.SECONDS).
+    public void interval() {
+        Subscription subscription = Observable.interval(1, TimeUnit.SECONDS).
                 observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Long>() {
                     @Override
                     public void onCompleted() {
-                        Logger.d("onCompleted");
+                        logger("onCompleted");
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Logger.d("onError" + e.getMessage());
+                        logger("onError" + e.getMessage());
                     }
 
                     @Override
                     public void onNext(Long aLong) {
-                        Logger.d("interval:" + aLong);
+                        logger("interval:" + aLong);
                     }
                 });
+        addSubscription(subscription);
     }
 
 
-    private void repeat() {
-        Observable.just(1, 2, 3, 4, 5).repeat(5).observeOn(AndroidSchedulers.mainThread()).subscribe(integer -> Logger.d(integer + ""));
+    public void repeat() {
+        Observable.just(1, 2, 3, 4, 5).repeat(5).observeOn(AndroidSchedulers.mainThread()).subscribe(integer -> logger(integer + ""));
     }
 
-    private void timer() {
-        Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> Logger.d(l + ""));
+    public void timer() {
+       Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> logger(l + ""));
     }
-
 
 }

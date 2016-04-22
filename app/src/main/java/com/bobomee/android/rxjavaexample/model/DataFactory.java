@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-package com.bobomee.android.rxjavaexample.TransformingObservables.model;
+package com.bobomee.android.rxjavaexample.model;
 
 import java.util.ArrayList;
 
