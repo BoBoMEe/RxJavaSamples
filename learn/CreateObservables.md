@@ -101,6 +101,11 @@ OnSubscribe 会被存储在返回的 Observable 对象中，它的作用相当�
  其中just(T...):将传入的参数依次发送出来(一次来将整个的数组发射出去)。
  而from(T[])/from(Iterable<? extends T>) : 将传入的数组或 Iterable 拆分成具体对象后，依次发送出来（发射T.lenght次）。
  
+ - from操作符可以转换Future、Iterable和数组,对于Iterable和数组，产生的Observable会发射Iterable或数组的每一项数据.
+ 对于Future，它会发射Future.get()方法返回的单个数据
+ 
+ - 如果你传递null给Just，它会返回一个发射null值的Observable,如果需要空Observable你应该使用Empty操作符.
+ 
  //1.观察者
 ```java
  Observer<String> subscriber = createObserver();
@@ -130,7 +135,8 @@ observable.subscribe(subscriber);
 ```
 
 ## Range 
-Range操作符根据出入的初始值n和数目m发射一系列大于等于n的m个值
+Range操作符发射一个范围内的有序整数序列，你可以指定范围的起始和长度。它接受两个参数，一个是范围的起始值，一个是范围的数据的数目。
+如果你将第二个参数设为0，将导致Observable不发射任何数据（如果设置为负数，会抛异常）。
 
 ```java
 @NonNull
@@ -169,6 +175,7 @@ private void range() {
 ## Defer 
 Defer操作符只有当有Subscriber来订阅的时候才会创建一个新的Observable对象,
 每次订阅都会得到一个刚创建的最新的Observable对象，确保Observable对象里的数据是最新的.
+Defer操作符会一直等待直到有观察者订阅它，然后它使用Observable工厂方法生成一个Observable。
 如下代码就会打印当前实时时间
 
 ```java
@@ -274,13 +281,16 @@ public final Subscription subscribe(final Action1<? super T> onNext, final Actio
       即：在哪个线程调用 subscribe()，就在哪个线程生产事件；在哪个线程生产事件，就在哪个线程消费事件。如果需要切换线程，就需要用到 Scheduler （调度器）。
       
 *     RxJava内置Scheduler
-      Schedulers.immediate(): 默认的 Scheduler,当前线程运行，即不指定线程。
-      Schedulers.newThread(): 总是启用新线程，并在新线程执行操作。
-      Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。
+
+      1. Schedulers.immediate(): 默认的 Scheduler,当前线程运行，即不指定线程。
+      2. Schedulers.newThread(): 总是启用新线程，并在新线程执行操作。
+      3. Schedulers.io(): I/O 操作（读写文件、读写数据库、网络信息交互等）所使用的 Scheduler。
       和 newThread() 差不多，区别在于 io() 的内部实现是是用一个无数量上限的线程池，可以重用空闲的线程，因此多数情况下 io() 比 newThread() 更有效率。
-      Schedulers.computation(): 计算所使用的 Scheduler。
+      4. Schedulers.computation(): 计算所使用的 Scheduler。
+      5. Schedulers.from(executor):	使用指定的Executor作为调度器
       这个计算指的是 CPU 密集型计算，即不会被 I/O 等操作限制性能的操作，例如图形的计算。这个 Scheduler 使用的固定的线程池，大小为 CPU 核数。
-      AndroidSchedulers.mainThread():它指定的操作将在 Android 主线程运行。
+      6. Schedulers.trampoline():当其它排队的任务完成后，在当前线程排队开始执行
+      7. AndroidSchedulers.mainThread():它指定的操作将在 Android 主线程运行。
       
 *     注意：
       不要把计算工作放在 io() 中，可以避免创建不必要的线程。
@@ -323,7 +333,8 @@ Scheduler实例：
 ```
 
 ## Interval 
-Interval所创建的Observable对象会从0开始，每隔固定的时间发射一个数字。需要注意的是这个对象是运行在computation Scheduler, 如果涉及到UI操作，需要切换到主线程执行
+Interval所创建的Observable对象会从0开始，每隔固定的时间发射一个整数。需要注意的是这个对象是运行在computation Scheduler, 如果涉及到UI操作，需要切换到主线程执行
+它按固定的时间间隔发射一个无限递增的整数序列
 
 实例：
 ```java
@@ -374,5 +385,22 @@ private void timer() {
 ```
 
 隔3秒之后会在logcat打印一个0
+
+## Empty/Never/Throw
+
+- Empty
+创建一个不发射任何数据但是正常终止的Observable
+- Never
+创建一个不发射数据也不终止的Observable
+- Throw
+创建一个不发射数据以一个错误终止的Observable,需要传递一个Throwable参数
+
+```java
+public void error() {
+        Observable.error(new Throwable("error!")).
+                observeOn(AndroidSchedulers.mainThread(), true).
+                subscribe(this::logger);
+    }
+```
 
 参考：RxJava操作符（一）Creating Observables

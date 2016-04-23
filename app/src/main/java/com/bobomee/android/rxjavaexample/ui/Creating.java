@@ -181,7 +181,7 @@ public class Creating extends RecyclerActivity {
         observable.subscribe(subscriber);
     }
 
-    public void from() {
+    public void fromArray() {
         //1.观察者
         Observer<String> subscriber = createStringObserver();
         //2.被观察者
@@ -324,7 +324,25 @@ public class Creating extends RecyclerActivity {
     }
 
     public void timer() {
-       Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> logger(l + ""));
+        Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> logger(l + ""));
     }
+
+//    public void empty() {
+//        Observable.empty().
+//                observeOn(AndroidSchedulers.mainThread(), true).
+//                subscribe(this::logger);
+//    }
+//
+//    public void never() {
+//        Observable.never().
+//                observeOn(AndroidSchedulers.mainThread(), true).
+//                subscribe(this::logger);
+//    }
+//
+//    public void error() {
+//        Observable.error(new Throwable("error!")).
+//                observeOn(AndroidSchedulers.mainThread(), true).
+//                subscribe(this::logger);
+//    }
 
 }
