@@ -2,7 +2,6 @@ package com.bobomee.android.rxjavaexample.ui;
 
 import com.bobomee.android.rxjavaexample.RecyclerActivity;
 
-import rx.Single;
 import rx.SingleSubscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -13,16 +12,16 @@ import rx.functions.Func1;
 public class SingleObservable extends RecyclerActivity {
 
     public void create() {
-        Single.create(new Single.OnSubscribe<String>() {
+        rx.Single.create(new rx.Single.OnSubscribe<String>() {
             @Override
             public void call(SingleSubscriber<? super String> singleSubscriber) {
                 singleSubscriber.onSuccess("Hello");
             }
         })
-                .flatMap(new Func1<String, Single<Integer>>() {
+                .flatMap(new Func1<String, rx.Single<Integer>>() {
                     @Override
-                    public Single<Integer> call(String s) {
-                        return Single.just(s.hashCode());
+                    public rx.Single<Integer> call(String s) {
+                        return rx.Single.just(s.hashCode());
                     }
                 })
                 .subscribe(new Action1<Integer>() {
@@ -35,7 +34,7 @@ public class SingleObservable extends RecyclerActivity {
 
 
     public void just() {
-        Single.just(5).subscribe(this::logger);
+        rx.Single.just(5).subscribe(this::logger);
     }
 
 }
