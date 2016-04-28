@@ -327,6 +327,38 @@ public class Creating extends RecyclerActivity {
         Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(l -> logger(l + ""));
     }
 
+    public void repeatWhen() {
+        Subscription subscribe = Observable.range(10, 5).
+                repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return Observable.timer(3, TimeUnit.SECONDS);
+                    }
+                }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger(integer);
+            }
+        });
+        addSubscription(subscribe);
+    }
+
+    public void repeatDelay() {
+        Subscription subscribe = Observable.range(10, 5).
+                repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return observable.delay(2, TimeUnit.SECONDS);
+                    }
+                }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger(integer);
+            }
+        });
+        addSubscription(subscribe);
+    }
+
 //    public void empty() {
 //        Observable.empty().
 //                observeOn(AndroidSchedulers.mainThread(), true).

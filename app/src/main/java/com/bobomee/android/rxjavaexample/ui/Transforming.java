@@ -123,6 +123,69 @@ public class Transforming extends RecyclerActivity {
 
     }
 
+    /////////////////////////////flatMapIterable//////////////////////////////////
+
+    public void flatMapIterable() {
+        Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                .flatMapIterable(
+                        integer -> {
+                            ArrayList<Integer> s = new ArrayList<>();
+                            for (int i = 0; i < integer; i++) {
+                                s.add(integer);
+                            }
+                            return s;
+                        }
+                ).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger(integer);
+            }
+        });
+    }
+
+
+    public void concatMap() {
+        //concatMap操作符的运行结果
+        Subscription subscribe = Observable.just(10, 20, 30).concatMap(new Func1<Integer, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Integer integer) {
+                //10的延迟执行时间为200毫秒、20和30的延迟执行时间为180毫秒
+                int delay = 200;
+                if (integer > 10)
+                    delay = 180;
+
+                return Observable.from(new Integer[]{integer, integer / 2}).delay(delay, TimeUnit.MILLISECONDS);
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger("concatMap Next:" + integer);
+            }
+        });
+        addSubscription(subscribe);
+    }
+
+    public void switchMap() {
+        //switchMap操作符的运行结果
+        Subscription subscribe = Observable.just(10, 20, 30).switchMap(new Func1<Integer, Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call(Integer integer) {
+                //10的延迟执行时间为200毫秒、20和30的延迟执行时间为180毫秒
+                int delay = 200;
+                if (integer > 10)
+                    delay = 180;
+
+                return Observable.from(new Integer[]{integer, integer / 2}).delay(delay, TimeUnit.MILLISECONDS);
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger("switchMap Next:" + integer);
+            }
+        });
+        addSubscription(subscribe);
+    }
+
     ///////////////////////////buffer////////////////////////////////
 
     public void buffer() {
@@ -140,7 +203,7 @@ public class Transforming extends RecyclerActivity {
 
 
     public void groupBy() {
-         Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9).groupBy(integer -> integer % 2)
+        Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9).groupBy(integer -> integer % 2)
                 .subscribe(new Action1<GroupedObservable<Integer, Integer>>() {
                     @Override
                     public void call(GroupedObservable<Integer, Integer> integerIntegerGroupedObservable) {
@@ -150,7 +213,7 @@ public class Transforming extends RecyclerActivity {
                 });
     }
 
-    public void scan(){
+    public void scan() {
         Observable.just(1, 2, 3, 4, 5)
                 .scan(new Func2<Integer, Integer, Integer>() {
                     @Override
@@ -158,25 +221,25 @@ public class Transforming extends RecyclerActivity {
                         return sum + item;
                     }
                 }).subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onNext(Integer item) {
-                        System.out.println("Next: " + item);
-                    }
+            @Override
+            public void onNext(Integer item) {
+                System.out.println("Next: " + item);
+            }
 
-                    @Override
-                    public void onError(Throwable error) {
-                        System.err.println("Error: " + error.getMessage());
-                    }
+            @Override
+            public void onError(Throwable error) {
+                System.err.println("Error: " + error.getMessage());
+            }
 
-                    @Override
-                    public void onCompleted() {
-                        System.out.println("Sequence complete.");
-                    }
-                });
+            @Override
+            public void onCompleted() {
+                System.out.println("Sequence complete.");
+            }
+        });
     }
 
 
-    public void windowCount(){
+    public void windowCount() {
         Subscription subscribe = Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9).window(3)
                 .subscribe(new Action1<Observable<Integer>>() {
                     @Override
@@ -190,7 +253,7 @@ public class Transforming extends RecyclerActivity {
     }
 
 
-    public void windowTime(){
+    public void windowTime() {
         Subscription subscribe = Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .window(3000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Observable<Long>>() {

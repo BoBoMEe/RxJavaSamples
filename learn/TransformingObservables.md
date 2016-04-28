@@ -58,7 +58,7 @@ private void cast() {
      3. 每一个创建出来的 Observable 发送的事件，都被汇入同一个 Observable ，而这个 Observable
      负责将这些事件统一交给 Subscriber 的回调方法。
 
-通过一组新创建的 Observable 将初始的对象『铺平』之后通过统一路径分发了下去。
+通过一组新创建的 Observable 将初始的对象『铺平』之后通过统一路径分发了下去。而这个『铺平』就是 flatMap() 所谓的 flat。
 
 比如有如下需求：每个学生有多个课程，如需打印每个学生 所修课程
 代码可以这样写：
@@ -105,6 +105,97 @@ private void flatMap() {
 
 由于可以在嵌套的 Observable 中添加异步代码， flatMap() 也常用于嵌套的异步操作，例如嵌套的网络请求(不需要嵌套的callback)。
 
+```java
+//Retrofit + RxJava
+networkClient.token() // 返回 Observable<String>，在订阅时请求 token，并在响应后发送 token
+    .flatMap(new Func1<String, Observable<Messages>>() {
+        @Override
+        public Observable<Messages> call(String token) {
+            // 返回 Observable<Messages>，在订阅时请求消息列表，并在响应后发送请求到的消息列表
+            return networkClient.messages();
+        }
+    })
+    .subscribe(new Action1<Messages>() {
+        @Override
+        public void call(Messages messages) {
+            // 处理显示消息列表
+            showMessages(messages);
+        }
+    });
+```
+
+注意：
+>FlatMap对这些Observables发射的数据做的是`合并(merge)`的方式，因此它们可能是交错的，即转换后等顺序和原Observable是不一样的
+>如果任何一个通过flatMap操作产生的单独的Observable调用onError异常终止了，原Observable自身也会立即调用onError并终止。
+
+### flatMapIterable
+和flatmap不同等是，其转化的多个Observable使用Iterable作为源数据.
+
+```java
+ public void flatMapIterable() {
+        Observable.just(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                .flatMapIterable(
+                        integer -> {
+                            ArrayList<Integer> s = new ArrayList<>();
+                            for (int i = 0; i < integer; i++) {
+                                s.add(integer);
+                            }
+                            return s;
+                        }
+                ).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger(integer);
+            }
+        });
+    }
+```
+打印结果：
+1，
+2，2，
+3，3，3，
+4，4，4，4，
+5，5，5，5，5 ...
+
+### concatMap 
+
+采用的是`连接(concat)`的方式，而不是`合并(merge)`的方式，不会让变换后的Observables发射的数据交错，按照严格的顺序发射这些数据
+
+相关文章：[RxJava Observable tranformation: concatMap() vs flatMap()](http://fernandocejas.com/2015/01/11/rxjava-observable-tranformation-concatmap-vs-flatmap/)
+
+
+### switchMap 
+ 和FlatMap类似，不同的是switchMap操作符会保存最新的Observable产生的结果而舍弃旧的结果。
+ 
+ 如下代码：
+ ```java
+ public void switchMap() {
+         //switchMap操作符的运行结果
+         Subscription subscribe = Observable.just(10, 20, 30).switchMap(new Func1<Integer, Observable<Integer>>() {
+             @Override
+             public Observable<Integer> call(Integer integer) {
+                 //10的延迟执行时间为200毫秒、20和30的延迟执行时间为180毫秒
+                 int delay = 200;
+                 if (integer > 10)
+                     delay = 180;
+ 
+                 return Observable.from(new Integer[]{integer, integer / 2}).delay(delay, TimeUnit.MILLISECONDS);
+             }
+         }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Integer>() {
+             @Override
+             public void call(Integer integer) {
+                 logger("switchMap Next:" + integer);
+             }
+         });
+         addSubscription(subscribe);
+     }
+ ```
+ 
+ 打印结果：
+ >switchMap Next:15
+ >switchMap Next:30 
+ 
+
 ## Buffer 
 
 从字面意思来看就知道这是用于缓存的。
@@ -112,8 +203,9 @@ Buffer 操作符会定期收集Observable的数据放进一个数据包裹，然
 
 Window操作符与Buffer类似，但是它在发射之前把收集到的数据放进单独的Observable，而不是放进一个数据结构。
 
-buffer(count):缓存之多count个
+buffer(count):缓存count个
 buffer(count，skip)：从原始Observable的第一项数据开始创建新的缓存，此后每当收到skip项数据，用count项数据填充缓存
+如：buffer(2，3):每3个数据发射一个包含两个数据的集合,若count == skip则和 buffer(count)效果一致。
 
 ```java
  public void buffer() {
@@ -123,8 +215,12 @@ buffer(count，skip)：从原始Observable的第一项数据开始创建新的�
     }
 ```
 
-结果：
->每隔3个数字发射出前两个数字
+打印结果：
+`[1,2]`
+`[4,5]`
+
+注意：
+> 一旦源Observable在产生结果的过程中出现异常，即使buffer已经存在收集到的结果，订阅者也会马上收到这个异常，并结束整个过程
 
 
 ## GroupBy 
@@ -200,7 +296,7 @@ Sequence complete.
 ## Window
 
 Window 和 buffer有点相似，只是Buffer是将数据放进 一个数据结构进行缓存，而window是放进单独的Observable
-由Observable对象来发射内部包含的数据，于buffer相同的是都可以通过数目或时间来分组
+由Observable对象来发射内部包含的数据，与buffer相同的是都可以通过数目或时间来分组
 
 // 使用数目3 进行分组，每次发射出一个包含3个数据的小Observable
 ```java
@@ -232,3 +328,6 @@ public void windowTime(){
         });
     }
 ```
+
+参考：[ReactiveX中文翻译文档](https://mcxiaoke.gitbooks.io/rxdocs/content/Observables.html)
+[Android RxJava使用介绍（三） RxJava的操作符](http://blog.csdn.net/job_hesc/article/details/46495281)
