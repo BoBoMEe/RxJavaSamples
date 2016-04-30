@@ -195,6 +195,9 @@ networkClient.token() // 返回 Observable<String>，在订阅时请求 token，
  >switchMap Next:15
  >switchMap Next:30 
  
+ switchMap使用场景：多用于频繁的网络请求，如EditText输入联想。
+ 由于输入的不断变化，返回的结果和输入框字符的不同步，且多线程同时运行，易发生错误，用switchMap取消上次请求。
+ 
 
 ## Buffer 
 
@@ -218,6 +221,16 @@ buffer(count，skip)：从原始Observable的第一项数据开始创建新的�
 打印结果：
 `[1,2]`
 `[4,5]`
+
+而如果是下面的代码
+```java
+ public void buffer() {
+         Observable.just(1, 2, 3, 4, 5, 6,7,8)
+                .buffer(2, 4)
+                .subscribe(this::logger);
+    }
+```
+打印结果和上面相同。
 
 注意：
 > 一旦源Observable在产生结果的过程中出现异常，即使buffer已经存在收集到的结果，订阅者也会马上收到这个异常，并结束整个过程
