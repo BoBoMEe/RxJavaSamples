@@ -1,6 +1,5 @@
-## Single 
 
-## 概述
+## Single Operator
 
 Single是一个Observable的变种，它总是只发射一个值，或者一个错误通知。
 订阅Single只需要两个方法：
@@ -57,9 +56,8 @@ Single也可以与以下操作符 混合使用
     }
 ```
 
-## Subjects 
+##Subject
 
-## 概述
 Subject这个对象既是Observable又是Observer，我会把Subject想象成一个管道：从一端把数据注入，结果就会从另一端输出。
 因为它是一个Observer，它可以订阅一个或多个Observable；
 又因为它是一个Observable，它可以转发它收到(Observe)的数据，也可以发射新的数据。
@@ -126,8 +124,7 @@ public void asyncSubject() {
     }
 ```
 打印结果：
->
- Observable onNext:0
+> Observable onNext:0
  Observable onNext:1
  Observable onNext:2
  Observable onNext:3
@@ -354,7 +351,9 @@ observer1:Observable completed
 observer2:Observable completed
 
 
+使用实例：[Subjects.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Subject)
 
 
+参考：[ReactiveX中文翻译文档](https://mcxiaoke.gitbooks.io/rxdocs/content/Observables.html)
 
- 
+开发技术前线：[RxJava开发精要2-为什么是Observables?](http://www.devtf.cn/?p=1223)

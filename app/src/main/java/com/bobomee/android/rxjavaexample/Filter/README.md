@@ -219,10 +219,10 @@ Sequence complete.
 ## First、Last 
 
 First返回满足条件的第一条数据.被实现为first，firstOrDefault和takeFirst。
-takeFist会返回一个空的Observable（不调用onNext()但是会调用onCompleted）。
-
 Last操作符只返回最后一条满足条件的数据，被实现为last和lastOrDefault。
-如果获取不到数据，则会抛出NoSuchElementException异常
+
+如果获取不到数据，First和Last会抛出NoSuchElementException异常
+takeFist会返回一个空的Observable（不调用onNext()但是会调用onCompleted）。
 
 First和Last 都没有实现为一个返回Observable的过滤操作符，
 而是一个在当时就发射原始Observable指定数据项的阻塞函数。如果需要的是过滤操作符，
@@ -376,8 +376,8 @@ private Observable<Integer> createObserver() {
 ```
 
 打印结果：
->
-sample:3
+
+>sample:3
 sample:8
 sample:13
 sample:18
@@ -421,7 +421,7 @@ ignoreElements操作符适用于不太关心Observable产生的结果，只是�
 >Sequence complete.
 
 
-使用Demo：[Filtering.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/ui/Filtering.java)
+使用Demo：[Filtering.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Filter)
 
 参考：
 [ReactiveX文档中文翻译](https://mcxiaoke.gitbooks.io/rxdocs/content/operators/Filtering-Observables.html)

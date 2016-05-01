@@ -22,31 +22,37 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Creating">
+        <activity android:name=".Create.Creating">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.category" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Transforming">
+        <activity android:name=".Transform.Transforming">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.category" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Filtering">
+        <activity android:name=".Filter.Filtering">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.category" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.Subjects">
+        <activity android:name=".Subject.Subjects">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.category" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SingleObservable">
+        <activity android:name=".Subject.SingleObservable">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.category" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Combine.Combining">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.category" />

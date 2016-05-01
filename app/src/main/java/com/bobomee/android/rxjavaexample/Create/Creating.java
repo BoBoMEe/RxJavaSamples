@@ -1,4 +1,4 @@
-package com.bobomee.android.rxjavaexample.ui;
+package com.bobomee.android.rxjavaexample.Create;
 
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;

@@ -1,4 +1,4 @@
-package com.bobomee.android.rxjavaexample.ui;
+package com.bobomee.android.rxjavaexample.Filter;
 
 import com.bobomee.android.rxjavaexample.RecyclerActivity;
 

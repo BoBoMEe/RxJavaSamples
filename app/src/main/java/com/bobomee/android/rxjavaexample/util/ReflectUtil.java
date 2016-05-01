@@ -45,7 +45,8 @@ public class ReflectUtil {
 
     public static Object invokeMethod(Object object, String methodName) {
         //根据 对象、方法名和对应的方法参数 通过反射 调用上面的方法获取 Method 对象
-        Method method = getDeclaredMethod(object, methodName, null);
+        Method method = getDeclaredMethod(object, methodName,
+                null);
 
         //抑制Java对方法进行检查,主要是针对私有方法而言
         method.setAccessible(true);

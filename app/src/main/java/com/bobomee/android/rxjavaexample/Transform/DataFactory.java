@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-package com.bobomee.android.rxjavaexample.model;
+package com.bobomee.android.rxjavaexample.Transform;
 
 import java.util.ArrayList;
 

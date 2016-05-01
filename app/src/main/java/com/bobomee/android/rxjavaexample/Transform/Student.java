@@ -23,25 +23,29 @@
  * SOFTWARE.
  */
 
-package com.bobomee.android.rxjavaexample.model;
+package com.bobomee.android.rxjavaexample.Transform;
+
+import java.util.ArrayList;
 
 /**
- * 类描述:课程类
+ * 类描述:学生类
  * 创建人:malin.myemail@gmail.com
- * 创建时间:15-11-13.
+ * 创建时间:15-11-10.
  * 备注:
  */
+public class Student {
 
-public class Course {
+    public int id;//学号
+    public String name;//姓名
 
-    public int id;//课程编号
-    public String name;//课程名称
+    public ArrayList<Course> courses;//学生选修的课程
 
     @Override
     public String toString() {
-        return "Course{" +
+        return "Student{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", courses=" + courses +
                 '}';
     }
 }

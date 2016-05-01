@@ -1,9 +1,6 @@
-package com.bobomee.android.rxjavaexample.ui;
+package com.bobomee.android.rxjavaexample.Transform;
 
 import com.bobomee.android.rxjavaexample.RecyclerActivity;
-import com.bobomee.android.rxjavaexample.model.Course;
-import com.bobomee.android.rxjavaexample.model.DataFactory;
-import com.bobomee.android.rxjavaexample.model.Student;
 
 import java.util.ArrayList;
 import java.util.List;

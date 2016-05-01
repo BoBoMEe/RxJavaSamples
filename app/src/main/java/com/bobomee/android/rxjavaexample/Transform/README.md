@@ -10,7 +10,11 @@
       
 *   Observable和Subscriber是独立于中间的变换过程的
 
-## Map,Cast
+##map集合
+mapping方法包括：map(),flatMap(),concatMap(),flatMapIterable()以及switchMap().
+
+###Map
+map函数接收一个指定的Func对象然后将它应用到每一个由Observable发射的值上。进而对原Observable中的数据进行变换。
     
 ```java
     //通过map操作符将String -> Integer
@@ -33,22 +37,7 @@
       Func1 和 Action1的区别，Func1用于包装有返回值 的方法。
       FuncX类似于ActionX也有多个。
 
-Cast将Observable发射的数据强制转化为另外一种类型，属于Map的一种具体的实现，主要是做类型转换的。
-源Observable产生的结果不能转成指定的class，则会抛出ClassCastException运行时异常。
-
-```java
-private void cast() {
-        Observable.just(1,2,3,4,5,6).cast(Integer.class).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer value) {
-               logger("next:"+value);
-            }
-        });
-    }
-```
-打印结果：next:1 ，next:2 ，next:3 ，next:4 ，next:5 ，next:6
-
-## FlatMap
+### FlatMap
  
 与map不同的是，flatMap返回的是Observable对象，并且这个 Observable 对象并不是被直接发送到了 Subscriber的回调方法中
 
@@ -168,7 +157,9 @@ networkClient.token() // 返回 Observable<String>，在订阅时请求 token，
  和FlatMap类似，不同的是switchMap操作符会保存最新的Observable产生的结果而舍弃旧的结果。
  
  如下代码：
- ```java
+ 
+
+```java
  public void switchMap() {
          //switchMap操作符的运行结果
          Subscription subscribe = Observable.just(10, 20, 30).switchMap(new Func1<Integer, Observable<Integer>>() {
@@ -189,15 +180,38 @@ networkClient.token() // 返回 Observable<String>，在订阅时请求 token，
          });
          addSubscription(subscribe);
      }
- ```
+```
+
  
  打印结果：
  >switchMap Next:15
  >switchMap Next:30 
  
- switchMap使用场景：多用于频繁的网络请求，如EditText输入联想。
+### switchMap使用场景：
+ 多用于频繁的网络请求，如EditText输入联想。
  由于输入的不断变化，返回的结果和输入框字符的不同步，且多线程同时运行，易发生错误，用switchMap取消上次请求。
  
+ 参考文章：[使用RxJava 提升用户体验](http://www.jianshu.com/p/33c548bce571)
+
+##Cast
+Cast将Observable发射的数据强制转化为另外一种类型，属于Map的一种具体的实现，主要是做类型转换的。
+源Observable产生的结果不能转成指定的class，则会抛出ClassCastException运行时异常。
+
+```java
+private void cast() {
+        Observable.just(1,2,3,4,5,6).cast(Integer.class).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer value) {
+               logger("next:"+value);
+            }
+        });
+    }
+```
+打印结果：next:1 ，next:2 ，next:3 ，next:4 ，next:5 ，next:6
+
+
+
+
 
 ## Buffer 
 
@@ -230,7 +244,7 @@ buffer(count，skip)：从原始Observable的第一项数据开始创建新的�
                 .subscribe(this::logger);
     }
 ```
-打印结果和上面相同。
+>打印结果和上面相同。
 
 注意：
 > 一旦源Observable在产生结果的过程中出现异常，即使buffer已经存在收集到的结果，订阅者也会马上收到这个异常，并结束整个过程
@@ -259,7 +273,8 @@ GroupBy操作符将原始Observable发射的数据按照key来拆分成一些小
 > key0 contains:4 numbers
 key1 contains:5 numbers
 
-> 需要注意的是：groupBy将原始Observable分解为一个发射多个GroupedObservable的Observable，一旦有订阅，每个GroupedObservable就开始缓存数据。
+需要注意的是：
+>groupBy将原始Observable分解为一个发射多个GroupedObservable的Observable，一旦有订阅，每个GroupedObservable就开始缓存数据。
 如果你忽略这些GroupedObservable中的任何一个，GroupedObservable 中的任何一个，这个缓存可能形成一个潜在的内存泄露。
 
 ##Scan
@@ -342,5 +357,9 @@ public void windowTime(){
     }
 ```
 
-参考：[ReactiveX中文翻译文档](https://mcxiaoke.gitbooks.io/rxdocs/content/Observables.html)
+示例代码：[Transforming.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Transform) 
+
+参考及拓展阅读：[ReactiveX中文翻译文档](https://mcxiaoke.gitbooks.io/rxdocs/content/Observables.html)
 [Android RxJava使用介绍（三） RxJava的操作符](http://blog.csdn.net/job_hesc/article/details/46495281)
+[使用RxJava 提升用户体验](http://www.jianshu.com/p/33c548bce571)
+ 

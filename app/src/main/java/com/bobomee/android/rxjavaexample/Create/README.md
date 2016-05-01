@@ -1,4 +1,6 @@
-## RxJava学习基础
+
+##概述
+
 
 RxJava是一个实现异步操作的库，采用链式掉用来实现响应式编程，使逻辑代码更加清晰。是ReactiveX的Java版本实现。
 
@@ -12,13 +14,15 @@ Button -> 被观察者、OnClickListener -> 观察者、setOnClickListener() -> 
 一个"热"的Observable可能一创建完就开始发射数据，因此所有后续订阅它的观察者可能从序列中间的某个位置开始接受数据（会丢失一些数据）。
 一个"冷"的Observable会一直等待，直到有观察者订阅它才开始发射数据，因此这个观察者可以确保会收到整个数据序列。
 
+
 ## RxJava回调方法
 
 RxJava中定义了三种回调方法：
-  onNext()：相当于 onClick() / onEvent()
-  onCompleted(): 事件队列完结，时间队列中没有 新的 onNext() 发出时触发
-  onError(): 事件队列异常，事件处理过程出异常时，onError() 会被触发，同时队列自动终止，不再有事件发出
-  onCompleted() 和 onError() 二者互斥，在一个正确运行的事件序列中, onCompleted() 和 onError() 有且只会触发一个
+
+ - onNext()：相当于 onClick() / onEvent()
+ - onCompleted(): 事件队列完结，时间队列中没有 新的 onNext() 发出时触发
+ - onError(): 事件队列异常，事件处理过程出异常时，onError() 会被触发，同时队列自动终止，不再有事件发出
+ - onCompleted() 和 onError() 二者互斥，在一个正确运行的事件序列中, onCompleted() 和 onError() 有且只会触发一个
   
 ## 基本实现
 
@@ -100,8 +104,8 @@ OnSubscribe 会被存储在返回的 Observable 对象中，它的作用相当�
 ## Just、From
 
  just 和 from操作符用来快捷创建事件队列。
- 其中just(T...):将传入的参数依次发送出来(一次来将整个的数组发射出去)。
- 而from(T[])/from(Iterable<? extends T>) : 将传入的数组或 Iterable 拆分成具体对象后，依次发送出来（发射T.lenght次）。
+`just(T...)`:将传入的参数依次发送出来(一次来将整个的数组发射出去)。
+`from(T[])/from(Iterable<? extends T>)` : 将传入的数组或 Iterable 拆分成具体对象后，依次发送出来（发射T.lenght次）。
  
  - from操作符可以转换Future、Iterable和数组,对于Iterable和数组，产生的Observable会发射Iterable或数组的每一项数据.
  对于Future，它会发射Future.get()方法返回的单个数据
@@ -237,7 +241,7 @@ private void action() {
     }
 ```
 
-subscriber相关源码
+subscribe相关源码
 
 ```java
 public final Subscription subscribe(final Action1<? super T> onNext, final Action1<Throwable> onError, final Action0 onComplete) {
@@ -295,11 +299,11 @@ public final Subscription subscribe(final Action1<? super T> onNext, final Actio
       7. AndroidSchedulers.mainThread():它指定的操作将在 Android 主线程运行。
       
 *     注意：
-      不要把计算工作放在 io() 中，可以避免创建不必要的线程。
-      不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
-      subscribeOn(): 指定 subscribe() 所发生的线程,即Observable.OnSubscribe 被激活时所处的线程，或者叫做事件产生的线程。
-      observeOn(): 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程。
-    
+      1. 不要把计算工作放在 io() 中，可以避免创建不必要的线程。
+      2. 不要把 I/O 操作放在 computation() 中，否则 I/O 操作的等待时间会浪费 CPU。
+      3. subscribeOn(): 指定 subscribe() 所发生的线程,即Observable.OnSubscribe 被激活时所处的线程，或者叫做事件产生的线程，当使用了多个 subscribeOn() 的时候，只有第一个 subscribeOn() 起作用。
+      4. observeOn(): 指定 Subscriber 所运行在的线程。或者叫做事件消费的线程,在每个想要切换线程的位置都可以调用一次 observeOn()。
+      
 Scheduler实例：      
  
 ```java
@@ -335,7 +339,7 @@ Scheduler实例：
 ```
 
 ## Interval 
-Interval所创建的Observable对象会从0开始，每隔固定的时间发射一个整数。需要注意的是这个对象是运行在computation Scheduler, 如果涉及到UI操作，需要切换到主线程执行
+Interval所创建的Observable对象会从0开始，每隔固定的时间发射一个整数。需要注意的是这个对象是运行在computation Scheduler, 如果涉及到UI操作，需要切换到主线程执行
 它按固定的时间间隔发射一个无限递增的整数序列
 
 实例：
@@ -365,7 +369,7 @@ private void interval() {
 打印结果：interval:0，interval:1，interval:2...
 
 ## Repeat 
-Repeat会将一个Observable对象重复发射，我们可以指定其发射的次数
+Repeat会将一个Observable对象重复发射，我们可以指定其发射的次数,当 .repeat() 接收到 .onCompleted() 事件后触发重订阅。
 
 实例：
 
@@ -386,7 +390,7 @@ private void timer() {
     }
 ```
 
-隔3秒之后会在logcat打印一个0
+延迟3秒之后会在logcat打印一个0
 
 ## Empty/Never/Throw
 
@@ -404,5 +408,53 @@ public void error() {
                 subscribe(this::logger);
     }
 ```
+##repeatWhen
+— 创建一个重复发射指定数据或数据序列的Observable，它依赖于另一个Observable发射的数据.字面意思就是什么时候重新订阅。
+```java
+ public void repeatWhen() {
+        Observable.range(10, 5).
+                repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return Observable.timer(3, TimeUnit.SECONDS);
+                    }
+                }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger(integer);
+            }
+        });
+    }
+```
+会在第一遍数据发射完成后，延迟3秒重订阅一次(只重新订阅一次)。
+打印结果：
+>10,11,12,13,14  -->隔3秒
+>10,11,12,13,14
 
-参考：RxJava操作符（一）Creating Observables
+而如下代码实现了延迟重复轮询订阅
+```java
+Observable.range(10, 5).
+                repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return observable.delay(2, TimeUnit.SECONDS);
+                    }
+                }).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                logger(integer);
+            }
+        });
+```
+打印结果：
+
+>10,11,12,13,14  -->隔2秒
+>10,11,12,13,14  -->隔2秒
+>     ..........
+
+
+示例代码：[Creating.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Create)
+参考：
+[ReactiveX文档中文翻译](https://www.gitbook.com/book/mcxiaoke/rxdocs/details)
+[给 Android 开发者的 RxJava 详解](http://gank.io/post/560e15be2dca930e00da1083)
+[RxJava操作符（一）Creating Observables](http://mushuichuan.com/2015/12/11/rxjava-operator-1/)
