@@ -412,4 +412,4 @@ startWith:3
 
 参考：[ReactiveX中文翻译文档](https://mcxiaoke.gitbooks.io/rxdocs/content/operators/Combining-Observables.html)
 [RxJava部分操作符介绍 ](http://mushuichuan.com/tags/RxJava/)
-[RxJava开发精要6 - 组合Observables]([RxJava部分操作符介绍 ](http://mushuichuan.com/tags/RxJava/))
+[RxJava开发精要6 - 组合Observables](http://blog.csdn.net/bboyfeiyu/article/details/50512449)
