@@ -111,7 +111,7 @@ kind:OnNext--value:2
 kind:OnNext--value:3
 kind:OnCompleted--value:null
 
-meterialize:1
+>meterialize:1
 meterialize:2
 meterialize:3
 

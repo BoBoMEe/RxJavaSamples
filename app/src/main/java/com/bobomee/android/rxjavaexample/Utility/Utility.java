@@ -2,6 +2,7 @@ package com.bobomee.android.rxjavaexample.Utility;
 
 import com.bobomee.android.rxjavaexample.RecyclerActivity;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Notification;
@@ -246,6 +247,15 @@ public class Utility extends RecyclerActivity {
             logger("animal released");
             subscriber.unsubscribe();
         }
+    }
+
+    public void toList() {
+        Observable.just(1, 2, 3, 4, 5, 6).toList().subscribe(new Action1<List<Integer>>() {
+            @Override
+            public void call(List<Integer> integers) {
+                logger(integers);
+            }
+        });
     }
 
 

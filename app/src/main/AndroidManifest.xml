@@ -87,6 +87,14 @@
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Other.Other"
+            android:label="Basic/Other">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
