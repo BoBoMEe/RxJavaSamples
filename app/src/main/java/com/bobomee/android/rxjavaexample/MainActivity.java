@@ -18,29 +18,32 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends ListActivity {
-    private final String CATERGORY = "com.bobomee.android.rxjavaexample.category";
 
+    private static final String PATH = "com.bobomee.android.rxjavaexample.PATH";
+    private static final String CATEGORY = "com.bobomee.android.rxjavaexample.CATEGORY";
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Intent intent = getIntent();
-//        String path = intent.getStringExtra(CATERGORY);
-//
-//        if (path == null) {
-//            path = "";
-//        }
+        Intent intent = getIntent();
+        String path = intent.getStringExtra(PATH);
 
-        setListAdapter(new SimpleAdapter(this, getData(/*path*/),
-                android.R.layout.simple_list_item_1, new String[]{"title"},
-                new int[]{android.R.id.text1}));
+        if (path == null) {
+            path = "";
+        }
+
+        setListAdapter(new SimpleAdapter(this, getData(path),
+                android.R.layout.simple_list_item_1, new String[] { "title" },
+                new int[] { android.R.id.text1 }));
         getListView().setTextFilterEnabled(true);
     }
 
-    protected List<Map<String, Object>> getData(/*String prefix*/) {
-        List<Map<String, Object>> myData = new ArrayList<>();
+    protected List<Map<String, Object>> getData(String prefix) {
+        List<Map<String, Object>> myData = new ArrayList<Map<String, Object>>();
 
         Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-        mainIntent.addCategory(CATERGORY);
+        mainIntent.addCategory(CATEGORY);
 
         PackageManager pm = getPackageManager();
         List<ResolveInfo> list = pm.queryIntentActivities(mainIntent, 0);
@@ -48,37 +51,52 @@ public class MainActivity extends ListActivity {
         if (null == list)
             return myData;
 
+        String[] prefixPath;
+        String prefixWithSlash = prefix;
+
+        if (prefix.equals("")) {
+            prefixPath = null;
+        } else {
+            prefixPath = prefix.split("/");
+            prefixWithSlash = prefix + "/";
+        }
+
         int len = list.size();
 
-//        Map<String, Boolean> entries = new HashMap<String, Boolean>();
+        Map<String, Boolean> entries = new HashMap<String, Boolean>();
 
         for (int i = 0; i < len; i++) {
             ResolveInfo info = list.get(i);
-            String label = info.activityInfo.name;
-//            if (TextUtils.isEmpty(prefix) || label.contains(prefix)) {
-                String[] labelPath = label.split("\\.");
+            CharSequence labelSeq = info.loadLabel(pm);
+            String label = labelSeq != null
+                    ? labelSeq.toString()
+                    : info.activityInfo.name;
 
-                String nextLabel = /*TextUtils.isEmpty(prefix) ? labelPath[labelPath.length - 2] :*/ labelPath[labelPath.length - 1];
+            if (prefixWithSlash.length() == 0 || label.startsWith(prefixWithSlash)) {
 
-//                if (!TextUtils.isEmpty(prefix)) {
+                String[] labelPath = label.split("/");
+
+                String nextLabel = prefixPath == null ? labelPath[0] : labelPath[prefixPath.length];
+
+                if ((prefixPath != null ? prefixPath.length : 0) == labelPath.length - 1) {
                     addItem(myData, nextLabel, activityIntent(
                             info.activityInfo.applicationInfo.packageName,
                             info.activityInfo.name));
-//                } else {
-//                    if (entries.get(nextLabel) == null) {
-//                        addItem(myData, nextLabel, browseIntent(label.substring(0, label.lastIndexOf("."))));
-//                        entries.put(nextLabel, true);
-//                    }
-//                }
-//            }
+                } else {
+                    if (entries.get(nextLabel) == null) {
+                        addItem(myData, nextLabel, browseIntent(prefix.equals("") ? nextLabel : prefix + "/" + nextLabel));
+                        entries.put(nextLabel, true);
+                    }
+                }
+            }
         }
 
-        Collections.sort(myData, sDisplayNameComparator);
+        Collections.sort(myData, NAME_COMPARATOR);
 
         return myData;
     }
 
-    private final static Comparator<Map<String, Object>> sDisplayNameComparator =
+    private final static Comparator<Map<String, Object>> NAME_COMPARATOR =
             new Comparator<Map<String, Object>>() {
                 private final Collator collator = Collator.getInstance();
 
@@ -93,12 +111,12 @@ public class MainActivity extends ListActivity {
         return result;
     }
 
-//    protected Intent browseIntent(String path) {
-//        Intent result = new Intent();
-//        result.setClass(this, MainActivity.class);
-//        result.putExtra(CATERGORY, path);
-//        return result;
-//    }
+    protected Intent browseIntent(String path) {
+        Intent result = new Intent();
+        result.setClass(this, MainActivity.class);
+        result.putExtra(PATH, path);
+        return result;
+    }
 
     protected void addItem(List<Map<String, Object>> data, String name, Intent intent) {
         Map<String, Object> temp = new HashMap<String, Object>();
@@ -110,7 +128,7 @@ public class MainActivity extends ListActivity {
     @Override
     @SuppressWarnings("unchecked")
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        Map<String, Object> map = (Map<String, Object>) l.getItemAtPosition(position);
+        Map<String, Object> map = (Map<String, Object>)l.getItemAtPosition(position);
 
         Intent intent = (Intent) map.get("intent");
         startActivity(intent);

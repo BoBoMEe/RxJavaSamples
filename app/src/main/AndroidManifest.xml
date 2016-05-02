@@ -12,56 +12,79 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.DeviceDefault">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Create.Creating">
+        <activity
+            android:name=".Create.Creating"
+            android:label="Basic/Creating">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".Transform.Transforming">
+        <activity
+            android:name=".Transform.Transforming"
+            android:label="Basic/Transforming">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".Filter.Filtering">
+        <activity
+            android:name=".Filter.Filtering"
+            android:label="Basic/Filtering">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".Subject.Subjects">
+        <activity
+            android:name=".Subject.Subjects"
+            android:label="Basic/Transforming">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".Subject.SingleObservable">
+        <activity
+            android:name=".Subject.SingleObservable"
+            android:label="Basic/SingleObservable">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".Combine.Combining">
+        <activity
+            android:name=".Combine.Combining"
+            android:label="Basic/Combining">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
-        <activity android:name=".ErrorHandle.ErrorHandling">
+        <activity
+            android:name=".ErrorHandle.ErrorHandling"
+            android:label="Basic/ErrorHandling">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.category" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Utility.Utility"
+            android:label="Basic/Utility">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
     </application>

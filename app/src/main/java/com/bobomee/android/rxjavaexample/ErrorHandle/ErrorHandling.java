@@ -134,7 +134,7 @@ public class ErrorHandling extends RecyclerActivity {
                 });
     }
 
-    public void retryWhenObserver() {
+    public void retryWhen() {
         Observable.create((Subscriber<? super String> s) -> {
             logger("subscribing");
             s.onError(new RuntimeException("always fails"));
