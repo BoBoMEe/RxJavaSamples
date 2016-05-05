@@ -105,7 +105,23 @@
         </activity>
         <activity
             android:name=".rx_bing.RxBindingEditText"
-            android:label="rx_案例/search text(debounce/switchMap)">
+            android:label="rx_案例/edittext(debounce/switchMap)">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".rx_bing.RxBindingButtonClick"
+            android:label="rx_案例/button(throttleFirst)">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".rx_bing.SubjectSample"
+            android:label="rx_案例/PublishSubject">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />

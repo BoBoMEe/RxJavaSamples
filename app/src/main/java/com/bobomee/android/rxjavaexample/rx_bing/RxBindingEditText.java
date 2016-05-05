@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.Bind;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -119,6 +120,12 @@ public class RxBindingEditText extends BaseActivity {
                     @Override
                     public String call(String s) {
                         return s + s.hashCode();
+                    }
+                })
+                .finallyDo(new Action0() {
+                    @Override
+                    public void call() {
+
                     }
                 })
                 // 发射到主线程
