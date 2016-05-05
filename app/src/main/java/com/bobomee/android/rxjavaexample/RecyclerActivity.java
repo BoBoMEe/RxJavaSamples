@@ -1,7 +1,6 @@
 package com.bobomee.android.rxjavaexample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,23 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static java.util.Collections.sort;
 
 /**
  * Created by bobomee on 2016/4/21.
  */
-public class RecyclerActivity extends AppCompatActivity {
-
-    CommonAdapter commonAdapter;
-    List<Method> methods;
-    CompositeSubscription mCompositeSubscription;
+public class RecyclerActivity extends BaseActivity {
 
     @Bind(R.id.recycler)
     RecyclerView recycler;
@@ -47,14 +39,6 @@ public class RecyclerActivity extends AppCompatActivity {
 
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
-
-    public void addSubscription(Subscription s) {
-        if (this.mCompositeSubscription == null) {
-            this.mCompositeSubscription = new CompositeSubscription();
-        }
-
-        this.mCompositeSubscription.add(s);
-    }
 
     List<Method> getMethods() {
         List<Method> result = new ArrayList<>();
@@ -74,24 +58,7 @@ public class RecyclerActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_base);
 
-        ButterKnife.bind(this);
-
         setUpRecyclerView();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        ButterKnife.unbind(this);
-
-        unsubscribe();
-    }
-
-    private void unsubscribe() {
-        if (this.mCompositeSubscription != null) {
-            this.mCompositeSubscription.clear();
-        }
     }
 
     public void progressVisible() {
@@ -106,9 +73,9 @@ public class RecyclerActivity extends AppCompatActivity {
 
     void setUpRecyclerView() {
 
-        methods = getMethods();
+        List<Method> methods = getMethods();
 
-        commonAdapter = new CommonAdapter<Method>(this,
+        CommonAdapter commonAdapter = new CommonAdapter<Method>(this,
                 R.layout.recycler_view_tv_item, methods) {
             @Override
             public void convert(ViewHolder holder, Method m) {
@@ -155,6 +122,5 @@ public class RecyclerActivity extends AppCompatActivity {
     public void unsubscribeClick() {
         unsubscribe();
     }
-
 
 }

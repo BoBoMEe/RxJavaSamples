@@ -95,6 +95,22 @@
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".custom.CustomOperator"
+            android:label="Basic/CustomOperator">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".rx_bing.RxBindingEditText"
+            android:label="rx_案例/search text(debounce/switchMap)">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
