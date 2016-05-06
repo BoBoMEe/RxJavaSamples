@@ -11,12 +11,12 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -97,43 +97,33 @@ public class RxBindingEditText extends BaseActivity {
                     }
                 })
                 //转换 ＋ 取消上次请求，避免不同步，只获取最后一次结果
-                .switchMap(new Func1<CharSequence, Observable<String>>() {
+                .switchMap(new Func1<CharSequence, Observable<List<String>>>() {
                     @Override
-                    public Observable<String> call(CharSequence charSequence) {
+                    public Observable<List<String>> call(CharSequence charSequence) {
                         // 过滤，包含输入的字符
-                        return Observable.from(ITEMS).filter(new Func1<String, Boolean>() {
-                            @Override
-                            public Boolean call(String s) {
-                                return s.contains(charSequence);
-                            }
-                        });
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .filter(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        return s.length() > 4;
-                    }
-                })
-                .map(new Func1<String, String>() {
-                    @Override
-                    public String call(String s) {
-                        return s + s.hashCode();
-                    }
-                })
-                .finallyDo(new Action0() {
-                    @Override
-                    public void call() {
-
+                        return Observable.from(ITEMS)
+                                .subscribeOn(Schedulers.io())
+                                .filter(new Func1<String, Boolean>() {
+                                    @Override
+                                    public Boolean call(String s) {
+                                        return s.contains(charSequence) && s.length() > 4;
+                                    }
+                                })
+                                .map(new Func1<String, String>() {
+                                    @Override
+                                    public String call(String s) {
+                                        return s + s.hashCode();
+                                    }
+                                })
+                                .toList();
                     }
                 })
                 // 发射到主线程
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<String>() {
+                .subscribe(new Action1<List<String>>() {
                     @Override
-                    public void call(String s) {
-                        stringQuickAdapter.add(s);
+                    public void call(List<String> strings) {
+                        stringQuickAdapter.replaceAll(strings);
                     }
                 })
         ;
