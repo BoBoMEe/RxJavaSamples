@@ -61,6 +61,21 @@ RxJava中的条件和boolean操作，及算术和 聚合操作,连接操作。
 BlockingObservable ：Observable.toBlocking( )，
 一个阻塞的Observable 继承普通的Observable类，增加了一些可用于阻塞Observable发射的数据的操作符。 
 
+## 自定义操作符
+
+对于我们的特殊需求，需要用到自定义操作符。如果自定义操作符作用在发射的数据上，则用到lift
+如果需要改变整个的Observable，就需要使用compose
+compose是对Observable进行操作的而lift是对Subscriber进行操作。
+
+lift中需要传入一个自定义的Operator，而compose中需要传入一个自定义的Transformer。
+Transformer就像是一个批量转化器
+
+需要注意的是，自定义Operator内部不能阻塞住。
+如果通过compose组合多个操作符就能达到目的就不要自己去写新的代码来实现，在Rxjava的源码中就有很多这样的例子，如：
+first()操作符是通take(1).single()来实现的。
+ignoreElements()是通过 filter(alwaysFalse())来实现的。
+reduce(a) 是通过 scan(a).last()来实现的。
+
 示例：
 [Other.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Other)
 
