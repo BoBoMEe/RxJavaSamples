@@ -1,7 +1,9 @@
 package com.bobomee.android.rxjavaexample;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +37,21 @@ public class BaseActivity extends AppCompatActivity {
         super.setContentView(layoutResID);
 
         ButterKnife.bind(this);
+
+        ActionBar supportActionBar = getSupportActionBar();
+        if (null != supportActionBar)
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

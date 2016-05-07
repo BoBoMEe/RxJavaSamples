@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-import rx.Observer;
+import rx.functions.Action1;
 
 /**
  * Created by bobomee on 16/5/5.
@@ -37,19 +37,9 @@ public class RxBindingButtonClick extends BaseActivity {
     public void btnClick(){
         RxView.clicks(btnClick)
                 .throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe(new Observer<Object>() {
+                .subscribe(new Action1<Void>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Object o) {
+                    public void call(Void aVoid) {
                         Toast.makeText(RxBindingButtonClick.this,"Click",Toast.LENGTH_SHORT).show();
                     }
                 });

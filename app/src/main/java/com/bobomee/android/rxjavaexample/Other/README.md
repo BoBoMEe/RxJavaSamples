@@ -57,6 +57,10 @@ RxJava中的条件和boolean操作，及算术和 聚合操作,连接操作。
 - Observable.replay( ) — 确保所有的订阅者看到相同的数据序列，即使它们在Observable开始发射数据之后才订阅,这里可以通过空间和时间上对其进行缓存
 - ConnectableObservable.refCount( ) — 让一个可连接的Observable表现得像一个普通的Observable
 
+## 阻塞
+BlockingObservable ：Observable.toBlocking( )，
+一个阻塞的Observable 继承普通的Observable类，增加了一些可用于阻塞Observable发射的数据的操作符。 
+
 示例：
 [Other.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Other)
 
