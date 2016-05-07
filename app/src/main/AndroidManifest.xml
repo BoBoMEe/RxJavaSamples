@@ -96,14 +96,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".custom.CustomOperator"
-            android:label="Basic/CustomOperator">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".rx_bing.RxBindingEditText"
             android:label="rx_案例/edittext(debounce&amp;switchMap)">
             <intent-filter>
@@ -122,6 +114,14 @@
         <activity
             android:name=".rx_bing.SubjectSample"
             android:label="rx_案例/PublishSubject">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".rxjava_sample.from_fernando_cejas_android10_coder.activity.ActivitySubscriberSample"
+            android:label="rx_案例/fernando_cejas_android10_coder_SubscriberSample">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
