@@ -127,6 +127,14 @@
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".rxjava_sample.from_fernando_cejas_android10_coder.activity.ActivitySubscriberSample"
+            android:label="rx_案例/fernando_cejas_android10_coder_SubscriberSample">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
