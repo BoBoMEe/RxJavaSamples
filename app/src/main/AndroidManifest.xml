@@ -49,7 +49,7 @@
         </activity>
         <activity
             android:name=".Subject.Subjects"
-            android:label="Basic/Transforming">
+            android:label="Basic/Subjects">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
@@ -57,7 +57,7 @@
         </activity>
         <activity
             android:name=".Subject.SingleObservable"
-            android:label="Basic/SingleObservable">
+            android:label="Basic/Single">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
@@ -96,32 +96,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".rx_bing.RxBindingEditText"
-            android:label="rx_案例/edittext(debounce&amp;switchMap)">
+            android:name=".rx_binding.RxBindingEditText"
+            android:label="rx_binding/edittext(debounce&amp;switchMap)">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".rx_bing.RxBindingButtonClick"
-            android:label="rx_案例/button(throttleFirst)">
+            android:name=".rx_binding.RxBindingButtonClick"
+            android:label="rx_binding/button(throttleFirst)">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".rx_bing.SubjectSample"
-            android:label="rx_案例/PublishSubject">
+            android:name=".rx_binding.SubjectSample"
+            android:label="rx_binding/PublishSubject">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".rxjava_sample.from_fernando_cejas_android10_coder.activity.ActivitySubscriberSample"
-            android:label="rx_案例/fernando_cejas_android10_coder_SubscriberSample">
+            android:name=".rx_samples.from_fernando_cejas_android10_coder.activity.ActivitySubscriberSample"
+            android:label="rx_java_sample/fernando_cejas_android10_coder_SubscriberSample">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".rx_samples.rx_bus_from_com_morihacky.Rx_bus_Activity"
+            android:label="rx_java_sample/com_morihacky_Rx_bus_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />

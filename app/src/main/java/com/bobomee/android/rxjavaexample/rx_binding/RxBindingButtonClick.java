@@ -1,4 +1,4 @@
-package com.bobomee.android.rxjavaexample.rx_bing;
+package com.bobomee.android.rxjavaexample.rx_binding;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.executor;
+package com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.executor;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;

@@ -1,4 +1,4 @@
-package com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.activity;
+package com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,11 +9,11 @@ import android.widget.Toast;
 
 import com.bobomee.android.rxjavaexample.BaseActivity;
 import com.bobomee.android.rxjavaexample.R;
-import com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.adapter.ElementsAdapter;
-import com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.data.DataManager;
-import com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.data.NumberGenerator;
-import com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.data.StringGenerator;
-import com.bobomee.android.rxjavaexample.rxjava_sample.from_fernando_cejas_android10_coder.executor.JobExecutor;
+import com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.adapter.ElementsAdapter;
+import com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.data.DataManager;
+import com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.data.NumberGenerator;
+import com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.data.StringGenerator;
+import com.bobomee.android.rxjavaexample.rx_samples.from_fernando_cejas_android10_coder.executor.JobExecutor;
 
 import butterknife.Bind;
 import butterknife.OnClick;

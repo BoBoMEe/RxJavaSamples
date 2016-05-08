@@ -64,4 +64,8 @@ dependencies {
     compile 'com.github.orhanobut:logger:1.12'
     compile 'com.joanzapata.android:base-adapter-helper:1.1.11'
     compile 'io.reactivex:rxjava-joins:0.21.0'
+    compile 'com.trello:rxlifecycle:0.6.0'
+// If you want pre-written Activities and Fragments you can subclass as providers
+    compile 'com.trello:rxlifecycle-components:0.6.0'
+    compile 'com.hwangjr.rxbus:rxbus:1.0.3'
 }
