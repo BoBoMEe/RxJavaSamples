@@ -68,4 +68,6 @@ dependencies {
 // If you want pre-written Activities and Fragments you can subclass as providers
     compile 'com.trello:rxlifecycle-components:0.6.0'
     compile 'com.hwangjr.rxbus:rxbus:1.0.3'
+    compile 'io.reactivex:rxjava-math:1.0.0'
+    compile 'io.reactivex:rxjava-math:1.0.0'
 }

@@ -10,6 +10,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
+import rx.observables.MathObservable;
 import rx.schedulers.Schedulers;
 
 /**
@@ -248,7 +249,7 @@ public class Other extends RecyclerActivity {
         });
     }
 
-    public void transfrom() {
+    public void transformer() {
         Observable.just(1, 2, 3).compose(new Observable.Transformer<Integer, String>() {
             @Override
             public Observable<String> call(Observable<Integer> integerObservable) {
@@ -261,6 +262,16 @@ public class Other extends RecyclerActivity {
                     @Override
                     public void call(String s) {
                         logger("compose:" + s);
+                    }
+                });
+    }
+
+    public void sumInteger(){
+        MathObservable.sumInteger(Observable.range(1,10))
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        logger(integer);
                     }
                 });
     }

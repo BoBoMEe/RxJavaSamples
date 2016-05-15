@@ -89,9 +89,11 @@ public class RxBindingEditText extends BaseActivity {
                 .subscribeOn(AndroidSchedulers.mainThread())
                 //限流，150ms内发出一次请求
                 .debounce(150, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new Func1<CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence charSequence) {
+                        stringQuickAdapter.clear();
                         //当 EditText 中文字大于0的时候执行后面的操作
                         return charSequence.length() > 0;
                     }

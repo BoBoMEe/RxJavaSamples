@@ -181,7 +181,7 @@ public class Creating extends RecyclerActivity {
         observable.subscribe(subscriber);
     }
 
-    public void fromArray() {
+    public void from() {
         //1.观察者
         Observer<String> subscriber = createStringObserver();
         //2.被观察者
