@@ -120,14 +120,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".rx_samples.from_fernando_cejas_android10_coder.activity.ActivitySubscriberSample"
-            android:label="rx_java_sample/fernando_cejas_android10_coder_SubscriberSample">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".rx_samples.rx_bus_from_com_morihacky.Rx_bus_Activity"
             android:label="rx_java_sample/com_morihacky_Rx_bus_Activity">
             <intent-filter>
@@ -138,6 +130,14 @@
         <activity
             android:name=".rx_samples.from_rxjava_android_samples.CustomFunc1"
             android:label="rx_java_sample/from_rxjava_android_samples_CustomFunc1">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".rx_samples.from_rxjava_android_samples.CustomMerge"
+            android:label="rx_java_sample/from_rxjava_android_samples_CustomMerge">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="com.bobomee.android.rxjavaexample.CATEGORY" />

@@ -351,6 +351,10 @@ observer1:Observable completed
 observer2:Observable completed
 
 
+Subject可用于双向监听
+
+
+
 使用实例：[Subjects.java](https://github.com/BoBoMEe/RxJavaLearn/blob/master/app/src/main/java/com/bobomee/android/rxjavaexample/Subject)
 
 

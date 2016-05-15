@@ -12,7 +12,7 @@ import rx.functions.Action0;
 import rx.functions.Func1;
 
 /**
- * Created by bobomee on 16/5/15.
+ * Created by bobomee on 16/5/8.
  */
 public class CustomFunc1 extends RecyclerActivity {
 
@@ -66,7 +66,7 @@ public class CustomFunc1 extends RecyclerActivity {
     // It's 12am in the morning and i feel lazy dammit !!!
 
     //public static class RepeatWithDelay
-    public class RepeatWithDelay
+    private class RepeatWithDelay
             implements Func1<Observable<? extends Void>, Observable<?>> {
 
         private final int _repeatLimit;
